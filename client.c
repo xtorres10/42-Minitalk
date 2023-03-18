@@ -50,8 +50,6 @@ int	ft_atoi(const char *str)
 // int	ft_num_tobinary(int	num)
 // {
 // 	int	bnum;
-
-	
 // }
 
 int	main(int argc, char *argv[])
@@ -74,28 +72,19 @@ int	main(int argc, char *argv[])
 		return (0);
 	}
 	pid = ft_atoi(argv[1]);
-	// printf("%d\t", 11 & (1u << 7)); // 10000000
-	// printf("%d\t", 11 & (1u << 6)); // 01000000
-	// printf("%d\t", 11 & (1u << 5)); // 00100000
-	// printf("%d\t", 11 & (1u << 4)); // 00010000
-	// printf("%d\t", 11 & (1u << 3)); // 00001000
-	// printf("%d\t", 11 & (1u << 2)); // 00000100
-	// printf("%d\t", 11 & (1u << 1)); // 00000010
-	// printf("%d\t", 11 & (1u << 0)); // 00000001
-
-// 11 = 00001011
-
 	i = -1;
 	while (argv[2][++i] != '\0')
 	{
 		j = 7;
 		while (j >= 0)
 		{
-			if (argv[2][i] & (1u << j))
+			if (argv[2][i] >> j & 1)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
+			usleep(200);
 			j--;
 		}
 	}
+	return (0);
 }
