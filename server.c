@@ -49,21 +49,17 @@ void	handler_signal(int sig)
 
 int	main(void)
 {
-	// struct sigaction	sact;
-	// sigset_ t			sigset;
+	struct sigaction	sact;
+	sigset_t			sigset;
 
-	printf("pid: %d\n", getpid()); 
-	// sigemptyset(&sigset);
-	// sact.sa_handler = handler_signal;
-	// sigaddset(&sigset, SIGUSR1);
-	// sigaddset(&sigset, SIGUSR2);
-	// sigaction(SIGUSR1, &sact, NULL);
-	// sigaction(SIGUSR2, &sact, NULL);
-	signal(SIGUSR1, handler_signal);
-	signal(SIGUSR2, handler_signal);
+	printf("pid: %d\n", getpid());
+	sigemptyset(&sigset);
+	sact.sa_handler = handler_signal;
+	sigaddset(&sigset, SIGUSR1);
+	sigaddset(&sigset, SIGUSR2);
+	sigaction(SIGUSR1, &sact, NULL);
+	sigaction(SIGUSR2, &sact, NULL);
 	while (1)
-	{
 		pause();
-	}
 	return (0);
 }
