@@ -1,6 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
+RM = rm -rf
+
 SRC = server.c client.c
 
 NAME = client server
@@ -16,11 +18,11 @@ client: client.c
 # %.o: %.c
 # 	$(CC) $(CFLAGS) -c -o $@ $<
 
-clean:
-	rm $(NAME)
+clean: $(NAME)
+	$(RM) $(NAME)
 
 fclean: clean
 
-re: fclean
+re: fclean all
 
 .PHONY : all clean fclean re

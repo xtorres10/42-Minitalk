@@ -14,37 +14,26 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
+#include <stdlib.h> 
 
-void	ft_bnum_todecimal(char *num)
+void	handler_signal(int sig, siginfo_t *info, void *notused)
 {
-	int	dnum;
-	int	i;
+	static int	i;
+	static int	num;
 
-	i = 7;
-	dnum = 0;
-	while (i >= 0)
-	{
-		dnum += (num[i] - 48) << (7 - i);
-		i--;
-	}
-	write(1, &dnum, 1);
-}
-
-void	handler_signal(int sig)
-{
-	static int	i = 0;
-	static char	bnum[8];
-
+	(void)notused;
 	if (sig == SIGUSR1)
-		bnum[i] = '1';
+		num += 1 << (7 - i);
 	else if (sig == SIGUSR2)
-		bnum[i] = '0';
+		num += 0 << (7 - i);
 	i++;
 	if (i == 8)
 	{
-		ft_bnum_todecimal(bnum);
+		write(1, &num, 1);
 		i = 0;
+		num = 0;
 	}
+	printf("client: %d\n", info->si_pid);
 }
 
 int	main(void)
@@ -54,11 +43,13 @@ int	main(void)
 
 	printf("pid: %d\n", getpid());
 	sigemptyset(&sigset);
-	sact.sa_handler = handler_signal;
+	sact.sa_sigaction = handler_signal;
 	sigaddset(&sigset, SIGUSR1);
 	sigaddset(&sigset, SIGUSR2);
-	sigaction(SIGUSR1, &sact, NULL);
-	sigaction(SIGUSR2, &sact, NULL);
+	if (sigaction(SIGUSR1, &sact, NULL) < 0)
+		exit(1);
+	if (sigaction(SIGUSR2, &sact, NULL) < 0)
+		exit(1);
 	while (1)
 		pause();
 	return (0);

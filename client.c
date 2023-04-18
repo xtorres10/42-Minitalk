@@ -75,5 +75,6 @@ int	main(int argc, char *argv[])
 			j--;
 		}
 	}
+	printf("mypid: %d\n", getpid());
 	return (0);
 }
