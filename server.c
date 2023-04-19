@@ -16,12 +16,21 @@
 #include <signal.h>
 #include <stdlib.h> 
 
+void	ft_putnbr(int num)
+{
+	if (num > 9)
+		ft_putnbr(num / 10);
+	num = num % 10 + '0';
+	write(1, &num, 1);
+}
+
 void	handler_signal(int sig, siginfo_t *info, void *notused)
 {
 	static int	i;
 	static int	num;
 
 	(void)notused;
+	(void)info;
 	if (sig == SIGUSR1)
 		num += 1 << (7 - i);
 	else if (sig == SIGUSR2)
@@ -33,7 +42,7 @@ void	handler_signal(int sig, siginfo_t *info, void *notused)
 		i = 0;
 		num = 0;
 	}
-	printf("client: %d\n", info->si_pid);
+	kill(info->si_pid, SIGUSR2);
 }
 
 int	main(void)
@@ -41,14 +50,15 @@ int	main(void)
 	struct sigaction	sact;
 	sigset_t			sigset;
 
-	printf("pid: %d\n", getpid());
+	ft_putnbr(getpid());
+	write(1, "\n", 1);
 	sigemptyset(&sigset);
 	sact.sa_sigaction = handler_signal;
 	sigaddset(&sigset, SIGUSR1);
 	sigaddset(&sigset, SIGUSR2);
-	if (sigaction(SIGUSR1, &sact, NULL) < 0)
+	if (sigaction(SIGUSR1, &sact, NULL) == -1)
 		exit(1);
-	if (sigaction(SIGUSR2, &sact, NULL) < 0)
+	else if (sigaction(SIGUSR2, &sact, NULL) == -1)
 		exit(1);
 	while (1)
 		pause();
